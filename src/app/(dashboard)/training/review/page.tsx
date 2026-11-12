@@ -10,6 +10,7 @@ import { GatewayError } from "@/lib/gateway/client";
 import { UNMATCHED_STATUSES, type UnmatchedStatus } from "@/lib/gateway/schemas";
 import { withGateway } from "@/lib/gateway/server";
 import { describeReviewError, isCaptureDisabled, type ReviewOperation } from "@/lib/review/messages";
+import { listSteps } from "@/lib/settings/server";
 
 export const metadata: Metadata = { title: "Cola de revisión | Node-RED Dashboard" };
 
@@ -65,14 +66,14 @@ async function ClustersSection() {
       const clusters = await client.listUnmatchedClusters();
       const intents = await client.listIntents();
       // The steps catalog only feeds the "new intent" dialog: its failure must not hide the clusters.
-      const steps = await client.listSteps().catch(() => null);
-      return { clusters, intents, steps };
+      return { clusters, intents };
     });
   } catch (error) {
     return noticeFor(error, "clusters");
   }
+  const steps = await listSteps().catch(() => null);
 
-  const { clusters, intents, steps } = data;
+  const { clusters, intents } = data;
   return (
     <ReviewClusters
       // Remount when the server data changes so local state restarts from it.

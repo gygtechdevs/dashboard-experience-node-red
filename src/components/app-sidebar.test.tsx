@@ -14,8 +14,8 @@ vi.mock("next/link", () => ({
 
 import { AppSidebar } from "./app-sidebar";
 
-function renderSidebar() {
-  return render(<AppSidebar email="admin@example.com" logout={async () => {}} />);
+function renderSidebar(canManageUsers?: boolean) {
+  return render(<AppSidebar email="admin@example.com" logout={async () => {}} canManageUsers={canManageUsers} />);
 }
 
 beforeEach(() => {
@@ -55,5 +55,24 @@ describe("AppSidebar", () => {
     pathname.value = "/knowledge/custom";
     renderSidebar();
     expect(screen.getByRole("link", { name: "Personalizado" })).toHaveAttribute("aria-current", "page");
+  });
+
+  it("shows the Usuarios entry only to users who can manage users", () => {
+    renderSidebar(true);
+    expect(screen.getByRole("link", { name: "Usuarios" })).toHaveAttribute("href", "/users");
+  });
+
+  it("hides the Usuarios entry by default and when not allowed", () => {
+    const { unmount } = renderSidebar();
+    expect(screen.queryByText("Usuarios")).not.toBeInTheDocument();
+    unmount();
+    renderSidebar(false);
+    expect(screen.queryByText("Usuarios")).not.toBeInTheDocument();
+  });
+
+  it("marks Usuarios as current on /users", () => {
+    pathname.value = "/users";
+    renderSidebar(true);
+    expect(screen.getByRole("link", { name: "Usuarios" })).toHaveAttribute("aria-current", "page");
   });
 });

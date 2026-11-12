@@ -14,7 +14,6 @@ export const stepSchema = z.object({ name: z.string(), path: z.string() });
 export type Step = z.infer<typeof stepSchema>;
 
 export const intentsResponseSchema = z.object({ ok: z.literal(true), intents: z.array(intentSchema) });
-export const stepsResponseSchema = z.object({ ok: z.literal(true), steps: z.array(stepSchema) });
 export const okResponseSchema = z.object({ ok: z.literal(true) }).loose();
 export const errorResponseSchema = z.object({ error: z.string() }).loose();
 

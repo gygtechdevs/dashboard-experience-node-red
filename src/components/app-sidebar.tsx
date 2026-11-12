@@ -12,6 +12,7 @@ import {
   MenuIcon,
   PlugIcon,
   SettingsIcon,
+  UsersIcon,
   XIcon,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -40,14 +41,19 @@ const NAV: NavItem[] = [
   { label: "Ayuda", icon: CircleHelpIcon },
 ];
 
+const USERS_ITEM: NavItem = { label: "Usuarios", icon: UsersIcon, href: "/users" };
+
 interface AppSidebarProps {
   email: string;
   logout: () => Promise<void>;
+  /** Adds the Usuarios entry (ADMIN only). */
+  canManageUsers?: boolean;
 }
 
-export function AppSidebar({ email, logout }: AppSidebarProps) {
+export function AppSidebar({ email, logout, canManageUsers = false }: AppSidebarProps) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const items = canManageUsers ? [...NAV.slice(0, -2), USERS_ITEM, ...NAV.slice(-2)] : NAV;
 
   return (
     <>
@@ -75,7 +81,7 @@ export function AppSidebar({ email, logout }: AppSidebarProps) {
         <div className="hidden px-5 py-5 text-lg font-semibold md:block">Node-RED</div>
         <nav aria-label="Principal" className="flex-1 overflow-y-auto px-3 py-2">
           <ul className="grid gap-1">
-            {NAV.map((item) => (
+            {items.map((item) => (
               <li key={item.label}>
                 <NavEntry item={item} pathname={pathname} onNavigate={() => setOpen(false)} />
                 {item.children ? (

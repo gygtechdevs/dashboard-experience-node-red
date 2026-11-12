@@ -36,11 +36,6 @@ describe("gateway client requests", () => {
     expect(init.cache).toBe("no-store");
   });
 
-  it("lists steps", async () => {
-    const { client } = setup(json(200, { ok: true, steps: [{ name: "O", path: "/o" }] }));
-    expect(await client.listSteps()).toEqual([{ name: "O", path: "/o" }]);
-  });
-
   it("creates an intent with a JSON body", async () => {
     const { client, fetchImpl } = setup(json(201, { ok: true }));
     await client.createIntent({ intent: "a", initialStep: "/a", keywords: ["k"] });

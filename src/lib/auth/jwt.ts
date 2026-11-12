@@ -84,3 +84,8 @@ export function canDeleteIntents(session: Session | null): boolean {
 export function canReviewUnmatched(session: Session | null): boolean {
   return !!session && session.permissions.includes("ADMIN");
 }
+
+/** The users admin API (/api/admin/users) is ADMIN-only. */
+export function canManageUsers(session: Session | null): boolean {
+  return !!session && session.permissions.includes("ADMIN");
+}

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { intentsResponseSchema, stepsResponseSchema, okResponseSchema } from "./schemas";
+import { intentsResponseSchema, okResponseSchema } from "./schemas";
 
 describe("intentsResponseSchema", () => {
   it("parses the gateway listing and keeps optional description", () => {
@@ -29,13 +29,6 @@ describe("intentsResponseSchema", () => {
     expect(
       intentsResponseSchema.safeParse({ ok: true, intents: [{ intent: "a", keywords: [] }] }).success,
     ).toBe(false);
-  });
-});
-
-describe("stepsResponseSchema", () => {
-  it("parses {ok, steps:[{name, path}]}", () => {
-    const parsed = stepsResponseSchema.parse({ ok: true, steps: [{ name: "Orders", path: "/orders" }] });
-    expect(parsed.steps).toEqual([{ name: "Orders", path: "/orders" }]);
   });
 });
 

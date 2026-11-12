@@ -13,7 +13,6 @@ import {
   intentsResponseSchema,
   okResponseSchema,
   rejectUnmatchedResponseSchema,
-  stepsResponseSchema,
   unmatchedClustersResponseSchema,
   unmatchedPageResponseSchema,
   type AnalyticsChannel,
@@ -25,7 +24,6 @@ import {
   type CreateIntentPayload,
   type ImpactSimulation,
   type Intent,
-  type Step,
   type UnmatchedClusters,
   type UnmatchedPage,
   type UnmatchedStatus,
@@ -63,7 +61,7 @@ export function inferFieldErrors(message: string): FieldErrors {
   return {};
 }
 
-function kindForStatus(status: number): GatewayErrorKind {
+export function kindForStatus(status: number): GatewayErrorKind {
   if (status === 401) return "unauthorized";
   if (status === 403) return "forbidden";
   if (status === 404) return "not_found";
@@ -96,7 +94,6 @@ export interface GatewayClientOptions {
 
 export interface GatewayClient {
   listIntents(): Promise<Intent[]>;
-  listSteps(): Promise<Step[]>;
   createIntent(payload: CreateIntentPayload): Promise<void>;
   updateIntent(name: string, payload: UpdateIntentPayload): Promise<void>;
   deleteIntent(name: string): Promise<void>;
@@ -188,7 +185,6 @@ export function createGatewayClient({
 
   return {
     listIntents: async () => (await request("/api/admin/intents", intentsResponseSchema)).intents,
-    listSteps: async () => (await request("/api/steps", stepsResponseSchema)).steps,
     createIntent: async (payload) => {
       await request("/api/admin/intents", okResponseSchema, { method: "POST", body: payload });
     },

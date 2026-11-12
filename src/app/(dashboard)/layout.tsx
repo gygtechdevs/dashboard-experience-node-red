@@ -2,6 +2,7 @@ import { Suspense, type ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SESSION_EXPIRED_PATH } from "@/lib/auth/constants";
+import { canManageUsers } from "@/lib/auth/jwt";
 import { getSession } from "@/lib/auth/session";
 import { logoutAction } from "../login/actions";
 
@@ -19,7 +20,7 @@ async function AuthenticatedShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex min-h-screen flex-col md:flex-row">
-      <AppSidebar email={session.email} logout={logoutAction} />
+      <AppSidebar email={session.email} logout={logoutAction} canManageUsers={canManageUsers(session)} />
       <main className="min-w-0 flex-1 px-4 py-6 md:px-8 md:py-8">{children}</main>
     </div>
   );

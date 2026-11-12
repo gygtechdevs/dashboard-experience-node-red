@@ -8,6 +8,7 @@ import { getSession } from "@/lib/auth/session";
 import { GatewayError } from "@/lib/gateway/client";
 import { describeGatewayError, withGateway } from "@/lib/gateway/server";
 import type { Step } from "@/lib/gateway/schemas";
+import { listSteps } from "@/lib/settings/server";
 
 export const metadata: Metadata = { title: "Conocimiento personalizado | Node-RED Dashboard" };
 
@@ -40,7 +41,7 @@ async function IntentsSection() {
 
   const [intentsResult, stepsResult] = await Promise.allSettled([
     withGateway((client) => client.listIntents()),
-    withGateway((client) => client.listSteps()),
+    listSteps(),
   ]);
 
   // withGateway redirects on 401 by throwing NEXT_REDIRECT; let it propagate.

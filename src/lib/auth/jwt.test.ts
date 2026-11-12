@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   canDeleteIntents,
+  canManageUsers,
   canReviewUnmatched,
   canWriteIntents,
   decodeJwtPayload,
@@ -116,5 +117,15 @@ describe("canReviewUnmatched", () => {
     expect(canReviewUnmatched(session(["ADMIN"]))).toBe(true);
     expect(canReviewUnmatched(session(["WRITE"]))).toBe(false);
     expect(canReviewUnmatched(null)).toBe(false);
+  });
+});
+
+describe("canManageUsers", () => {
+  const session = (permissions: Array<"READ" | "WRITE" | "ADMIN">) => ({ userId: "u", email: "e", permissions, expiresAt: 1 });
+
+  it("requires ADMIN (/api/admin/users is ADMIN-only)", () => {
+    expect(canManageUsers(session(["ADMIN"]))).toBe(true);
+    expect(canManageUsers(session(["READ", "WRITE"]))).toBe(false);
+    expect(canManageUsers(null)).toBe(false);
   });
 });

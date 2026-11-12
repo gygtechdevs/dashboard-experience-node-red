@@ -12,11 +12,19 @@ import { GatewayError, createGatewayClient, type GatewayClient } from "./client"
  * cannot be modified while rendering, so the handler does it).
  */
 export async function withGateway<T>(operation: (client: GatewayClient) => Promise<T>): Promise<T> {
+  return withSessionToken((token) => createGatewayClient({ baseUrl: gatewayUrl(), token }), operation);
+}
+
+/** Shared session handling for every client that talks to the gateway on behalf of the signed-in user. */
+export async function withSessionToken<C, T>(
+  createClient: (token: string) => C,
+  operation: (client: C) => Promise<T>,
+): Promise<T> {
   const token = await getAccessToken();
   if (!token) redirect(SESSION_EXPIRED_PATH);
 
   try {
-    return await operation(createGatewayClient({ baseUrl: gatewayUrl(), token }));
+    return await operation(createClient(token));
   } catch (error) {
     if (error instanceof GatewayError && error.kind === "unauthorized") {
       redirect(SESSION_EXPIRED_PATH);
